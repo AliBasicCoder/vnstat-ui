@@ -1,0 +1,111 @@
+#center {
+  margin: auto;
+  text-align: center;
+  max-width: 700px;
+}
+
+.object {
+  float: right;
+}
+
+.object-content {
+  text-align: left;
+  padding-left: 15px;
+}
+
+.object-header {
+  border-bottom: 3px solid black;
+  width: 100%;
+  padding: 10px 0 32px 0;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.object-header > h3 {
+  display: inline;
+  position: absolute;
+  left: 0;
+  top: -15px;
+}
+
+.object-header > button {
+  background: none;
+  border: none;
+  position: absolute;
+  right: 0;
+  font-size: 20px;
+}
+
+.option {
+  margin: 10px 0 10px 0;
+}
+
+.option > input[type="text"] {
+  width: 71.5%;
+}
+
+.option > select {
+  float: right;
+  font-size: 17px;
+  background-color: white;
+  padding: 3px;
+}
+
+.option > input {
+  float: right;
+}
+
+.del-btn {
+  background: none;
+  border: none;
+  float: right;
+  margin-left: 10px;
+}
+
+button.add-btn {
+  font-size: 17px;
+  background: none;
+  border: none;
+}
+
+button#save-btn {
+  background-color: green;
+  color: white;
+  border: none;
+  font-size: 22px;
+  border-radius: 10px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.msg.show {
+  display: block;
+}
+
+.msg {
+  text-align: center;
+  background-color: #4caf50;
+  padding: 20px 0 20px 0;
+  margin: 0px;
+  color: white;
+  display: none;
+  position: relative;
+}
+
+.msg > button {
+  right: 0;
+  position: absolute;
+  top: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+}
+
+.msg > button:hover {
+  background-color: white;
+  color: black;
+}

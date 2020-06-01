@@ -1,0 +1,13 @@
+{
+  "themes": {},
+  "config": {
+    "client": {
+      "theme": "default",
+      "themeConfig": {}
+    },
+    "server": {
+      "port": 4020,
+      "vnstatBin": "/usr/bin/vnstat"
+    }
+  }
+}
