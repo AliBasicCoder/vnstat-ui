@@ -7,12 +7,7 @@ import { File, Dir } from "fs-pro";
 
 const homedir: string = os.homedir();
 
-console.log(homedir);
-
-export const configFile = new File(
-  homedir,
-  "vnstat-ui/vnstat-ui-data.json",
-);
+export const configFile = new File(homedir, "vnstat-ui/vnstat-ui-data.json");
 
 // __dirname is the assets folder
 
@@ -26,7 +21,7 @@ export const hostThemes = (app: Express) => {
   themes.read().forEach((interfaceName) => {
     app.use(
       `/api/themes/${interfaceName}/static`,
-      express.static(path.join(themes.path, interfaceName)),
+      express.static(path.join(themes.path, interfaceName))
     );
   });
 };
@@ -48,9 +43,9 @@ export const logger: Logger = Object.assign(
       const { method: mth } = req;
       if (logger.enabled) {
         console.log(
-          `[${dateToStr(new Date())}] ${method(mth)} ${
-            statusCode(stc)
-          } ${req.url}`,
+          `[${dateToStr(new Date())}] ${method(mth)} ${statusCode(stc)} ${
+            req.url
+          }`
         );
       }
       next();
@@ -61,7 +56,7 @@ export const logger: Logger = Object.assign(
     enable() {
       logger.enabled = true;
     },
-  },
+  }
 );
 
 function shouldCompress(req: Request, res: Response) {
