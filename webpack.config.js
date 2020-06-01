@@ -1,3 +1,4 @@
+const webpack = require("webpack");
 const path = require("path");
 const nodemonPlugin = require("nodemon-webpack-plugin");
 
@@ -44,6 +45,7 @@ arr[1] = Object.assign({}, base, {
     new nodemonPlugin({
       args: ["start", "-d"],
     }),
+    new webpack.BannerPlugin({ banner: "#!/usr/bin/env node", raw: true }),
   ],
 });
 
