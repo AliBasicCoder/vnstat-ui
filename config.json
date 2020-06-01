@@ -2,7 +2,7 @@
   "themes": {},
   "config": {
     "client": {
-      "theme": "default",
+      "theme": "vnstat-ui-default-theme",
       "themeConfig": {}
     },
     "server": {
