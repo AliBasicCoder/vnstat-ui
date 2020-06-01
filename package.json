@@ -1,6 +1,6 @@
 {
   "name": "vnstat-ui",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "index.js",
   "license": "MIT",
   "repository": "https://github.com/AliBasicCoder/vnstat-ui.git",
