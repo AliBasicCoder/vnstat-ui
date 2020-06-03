@@ -16,24 +16,35 @@ const start = Date.now();
 const DoneLog = () =>
   console.log(`Done in ${chalk.green(Date.now() - start + "ms")}`);
 
-const findArgs = (...args: string[]) => {
+const findArgs = (...args: string[]): boolean => {
   for (let i = 0; i < args.length; i++) {
-    if (program.args.indexOf(args[i]) !== -1) return true;
+    const ind = program.args.indexOf(args[i]);
+    if (ind !== -1) return true;
   }
   return false;
+};
+
+const findArgsInd = (...args: string[]): number => {
+  for (let i = 0; i < args.length; i++) {
+    const ind = program.args.indexOf(args[i]);
+    if (ind !== -1) return ind;
+  }
+  return -1;
 };
 
 program
   .command("start")
   .option("-d, --debug", "show extra info")
+  .option("--port <port>", "run on some port")
   .description("starts the server")
   .action(() => {
     const debug = findArgs("-d", "--debug");
     const app = server({ debug });
     const { port } = configFile.json<FullConfig<any>>().config.server;
     const portStr = port === 80 ? "" : `:${port}`;
+    const portInd = findArgsInd("--port");
 
-    app.listen(port, () =>
+    app.listen(portInd !== -1 ? Number(program.args[portInd + 1]) : port, () =>
       console.log(
         `server started at ${chalk.green("http://localhost" + portStr + "/")}`
       )
