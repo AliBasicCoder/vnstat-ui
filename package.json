@@ -1,6 +1,6 @@
 {
   "name": "vnstat-ui",
-  "version": "1.0.4",
+  "version": "1.0.5-beta",
   "main": "index.js",
   "license": "MIT",
   "repository": "https://github.com/AliBasicCoder/vnstat-ui.git",
@@ -38,7 +38,7 @@
     "ts-loader": "^7.0.2",
     "typescript": "^3.8.3",
     "unflatten": "^1.0.4",
-    "vnstat-ui-deps": "^1.0.0",
+    "vnstat-ui-deps": "^1.0.3-beta",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   }
