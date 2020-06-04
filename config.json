@@ -3,7 +3,9 @@
   "config": {
     "client": {
       "theme": "vnstat-ui-default-theme",
-      "themeConfig": {}
+      "themesConfig": {
+        "vnstat-ui-default-theme": {}
+      }
     },
     "server": {
       "port": 4020,

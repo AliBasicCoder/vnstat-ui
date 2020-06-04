@@ -4067,10 +4067,10 @@ vm-browserify@^1.0.1:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
-vnstat-ui-deps@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/vnstat-ui-deps/-/vnstat-ui-deps-1.0.2.tgz#d4448afc37e6bdcc3e124526454e057286a7a05a"
-  integrity sha512-pam2lwAloRtN3gbFJRrIaj5O/jbwiu+sPbXStmtzjoYxEfWn3KJN7wrJNRSprD0FrcjapFDqQbKcWzZEs2R6yg==
+vnstat-ui-deps@^1.0.3-beta:
+  version "1.0.3-beta"
+  resolved "https://registry.yarnpkg.com/vnstat-ui-deps/-/vnstat-ui-deps-1.0.3-beta.tgz#2374c8dc55d297d5f45cac9a56270b47e258375a"
+  integrity sha512-EtHdr620Vuow/9Fh3WC0ZuWFxFP0UgZqs6BSEv4C6qs+TW956ghl8ZDPOg487f8fClafInMowvrvz3EXlyVl7Q==
   dependencies:
     axios "^0.19.2"
     convert-size "^1.0.7"

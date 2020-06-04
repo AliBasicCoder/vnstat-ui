@@ -42,9 +42,9 @@ arr[1] = Object.assign({}, base, {
   },
   target: "node",
   plugins: [
-    new nodemonPlugin({
-      args: ["start", "-d"],
-    }),
+    // new nodemonPlugin({
+    //  args: ["start", "-d"],
+    // }),
     new webpack.BannerPlugin({ banner: "#!/usr/bin/env node", raw: true }),
   ],
 });

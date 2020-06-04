@@ -41,10 +41,11 @@ program
     const debug = findArgs("-d", "--debug");
     const app = server({ debug });
     const { port } = configFile.json<FullConfig<any>>().config.server;
-    const portStr = port === 80 ? "" : `:${port}`;
     const portInd = findArgsInd("--port");
+    const realPort = portInd !== -1 ? Number(program.args[portInd + 1]) : port;
+    const portStr = realPort === 80 ? "" : `:${realPort}`;
 
-    app.listen(portInd !== -1 ? Number(program.args[portInd + 1]) : port, () =>
+    app.listen(realPort, () =>
       console.log(
         `server started at ${chalk.green("http://localhost" + portStr + "/")}`
       )
@@ -74,6 +75,7 @@ themes
         name: `${name}-dev`,
         version: "*",
       };
+      config.config.client.themesConfig[`${name}-dev`] = {};
       configFile.write(config);
       return;
     }
@@ -90,6 +92,7 @@ themes
         name: themeName,
         version: "*",
       };
+      config.config.client.themesConfig[themeName] = {};
       configFile.write(config);
     }
     if (theme.startsWith("github:")) {
@@ -117,6 +120,7 @@ themes
         owner,
         version: "*",
       };
+      config.config.client.themesConfig[repo] = {};
       configFile.write(config);
     }
   });
@@ -134,6 +138,7 @@ themes
     if (lstatSync(themeDir.path).isSymbolicLink()) unlinkSync(themeDir.path);
     else themeDir.delete();
     delete config.themes[theme];
+    delete config.config.client.themesConfig[theme];
     configFile.write(config);
   });
 

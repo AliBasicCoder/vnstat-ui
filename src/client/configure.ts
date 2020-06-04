@@ -3,6 +3,12 @@ import merge from "merge";
 import axios from "axios";
 import { getConfig, getThemeData, Types, obj } from "vnstat-ui-deps";
 
+function repeat(callback: (i: number) => any, times: number) {
+  for (let i = 0; i < times; i++) {
+    callback(i);
+  }
+}
+
 function querySelector<T extends Element>(query: string) {
   const el = document.querySelector<T>(query);
   if (!el) throw new Error("could not find element " + query);
@@ -25,10 +31,12 @@ declare global {
     toggle: Function;
     inputKeyup: Function;
     selectChange: Function;
+    delParent: Function;
     modifications: obj<any>;
     save: Function;
     remove: Function;
     add: Function;
+    errors: any[];
   }
 }
 
@@ -94,14 +102,36 @@ window.toggle = (btn: HTMLButtonElement) => {
   el.style.display = el.style.display === "none" ? "block" : "none";
 };
 
+function getSelTheme() {
+  return (
+    window.modifications["client.theme"] ||
+    window?.__cache?.config?.config?.client?.theme
+  );
+}
+
+function key(dataKey?: string) {
+  if (!dataKey) return "";
+  let str = dataKey.slice(1);
+  if (str.indexOf("themeConfig") !== -1) {
+    str = str.replace("themeConfig", `themesConfig.${getSelTheme()}`);
+  }
+  return str;
+}
+
 window.inputKeyup = (el: HTMLInputElement) => {
-  window.modifications[el.dataset.key?.slice(1) || ""] =
+  window.modifications[key(el.dataset.key)] =
     el.type === "number" ? Number(el.value) : el.value;
 };
 
 window.selectChange = (el: HTMLSelectElement) => {
-  window.modifications[el.dataset.key?.slice(1) || ""] =
+  const k = key(el.dataset.key);
+  window.modifications[k] =
     el.dataset.isbool === "true" ? eval(el.value) : el.value;
+  if (k === "client.theme") {
+    const center = querySelector("#center");
+    repeat(() => center.removeChild(center.children[0]), 2);
+    main();
+  }
 };
 
 const objectDiv = (
@@ -256,7 +286,15 @@ async function main() {
   const selTheme = config.config.client.theme;
   const center = querySelector("#center");
   const installedThemes = Object.keys(config.themes);
-  const { options, defaultOptions } = await getThemeData(selTheme);
+  const { options, defaultOptions } = await getThemeData(
+    window.modifications["client.theme"] || selTheme
+  );
+  if (window.modifications["client.theme"]) {
+    config.config.client.theme = window.modifications["client.theme"];
+    config.config.client.themeConfig =
+      config.config.client.themesConfig[config.config.client.theme];
+  }
+
   const obj = merge.recursive(
     {
       client: {
@@ -276,3 +314,21 @@ async function main() {
 }
 
 main();
+
+window.delParent = (el: HTMLButtonElement) => el.parentElement?.remove();
+
+window.onunhandledrejection = (ev: any) => {
+  window.errors = window.errors || [];
+  document.body.innerHTML = `
+    <div class="msg show red">
+      <button onclick="delParent(this)">X</button>
+      <h1>Oops An Error Happened</h1>
+      <p>check the console for tech details (you could access errors via errors variable)</p>
+    </div>
+    <div id="center">
+      <button id="save-btn" onclick="save()">save</button>
+    </div>
+  `;
+  console.log(ev);
+  window.errors.push(ev);
+};

@@ -85,6 +85,10 @@ body {
   display: block;
 }
 
+.msg.show.red {
+  background-color: red;
+}
+
 .msg {
   text-align: center;
   background-color: #4caf50;
