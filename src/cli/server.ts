@@ -8,15 +8,16 @@ import { flatten } from "flatten-anything";
 import express from "express";
 import bodyParser from "body-parser";
 import {
-  hostThemes,
   configFile,
   htmlFile,
   configureHtmlFile,
   useCompression,
   logger,
+  themes,
 } from "./extra";
 import { execSync as exec } from "child_process";
 import { FullConfig, obj } from "vnstat-ui-deps";
+import { join } from "path";
 
 const app = express();
 
@@ -75,7 +76,11 @@ app.post("/api/change_config", (req, res) => {
   res.sendStatus(200);
 });
 
-hostThemes(app);
+app.use("/api/themes/:interfaceName/static", (req, res, next) => {
+  if (req.method === "GET") {
+    res.sendFile(join(themes.path, req.params.interfaceName, req.url));
+  } else next();
+});
 
 export const server = ({ debug }: { debug: boolean }) => {
   if (debug) logger.enable();

@@ -17,15 +17,6 @@ export const configureHtmlFile = new File(__dirname, "configure.html");
 
 export const themes = new Dir(homedir, "vnstat-ui/themes");
 
-export const hostThemes = (app: Express) => {
-  themes.read().forEach((interfaceName) => {
-    app.use(
-      `/api/themes/${interfaceName}/static`,
-      express.static(path.join(themes.path, interfaceName))
-    );
-  });
-};
-
 export const useCompression = (app: Express) =>
   app.use(compression({ filter: shouldCompress }));
 
