@@ -1,33 +1,40 @@
-// @ts-ignore
 import merge from "merge";
-// @ts-ignore
 import unflatten from "unflatten";
-// @ts-ignore
 import * as formatJson from "format-json";
 import { flatten } from "flatten-anything";
 import express from "express";
+import compression from "compression";
 import bodyParser from "body-parser";
 import {
   configFile,
   htmlFile,
   configureHtmlFile,
-  useCompression,
-  logger,
+  dateToStr,
+  method,
+  statusCode,
   themes,
-} from "./extra";
+} from "./shared";
 import { execSync as exec } from "child_process";
 import { FullConfig, obj } from "vnstat-ui-deps";
 import { join } from "path";
 
-const app = express();
+// __dirname is the assets folder
+const app = Object.assign(express(), { debug: false });
 
 app.use(bodyParser.json());
 
-useCompression(app);
+app.use(compression());
 
-logger(app);
-
-// __dirname is the assets folder
+app.use((req, res, next) => {
+  const { statusCode: stc } = res;
+  const { method: mth } = req;
+  if (app.debug) {
+    console.log(
+      `[${dateToStr(new Date())}] ${method(mth)} ${statusCode(stc)} ${req.url}`
+    );
+  }
+  next();
+});
 
 app.use("/assets", express.static(__dirname));
 
@@ -71,6 +78,7 @@ app.post("/api/change_config", (req, res) => {
       delete body[propName];
     }
   }
+  // @ts-ignore
   data.config = merge.recursive(unflatten(configObj), unflatten(body));
   configFile.write(formatJson.plain(data));
   res.sendStatus(200);
@@ -82,7 +90,4 @@ app.use("/api/themes/:interfaceName/static", (req, res, next) => {
   } else next();
 });
 
-export const server = ({ debug }: { debug: boolean }) => {
-  if (debug) logger.enable();
-  return app;
-};
+export { app as server };

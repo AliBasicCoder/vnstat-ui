@@ -1,5 +1,4 @@
 import program = require("commander");
-import chalk from "chalk";
 import { execSync as exec } from "child_process";
 import extract from "extract-zip";
 import fetch from "node-fetch";
@@ -7,14 +6,13 @@ import { File, Dir } from "fs-pro";
 import symlink from "symlink-dir";
 import { join } from "path";
 import { unlinkSync, lstatSync } from "fs";
-import { configFile, themes as themesDir } from "./extra";
+import { configFile, themes as themesDir, log } from "./shared";
 import { server } from "./server";
 import { FullConfig } from "vnstat-ui-deps";
 
 const start = Date.now();
 
-const DoneLog = () =>
-  console.log(`Done in ${chalk.green(Date.now() - start + "ms")}`);
+const DoneLog = () => log(`Done in {green ${Date.now() - start + "ms"}`);
 
 const findArgs = (...args: string[]): boolean => {
   for (let i = 0; i < args.length; i++) {
@@ -39,16 +37,15 @@ program
   .description("starts the server")
   .action(() => {
     const debug = findArgs("-d", "--debug");
-    const app = server({ debug });
+    server.debug = debug;
     const { port } = configFile.json<FullConfig<any>>().config.server;
-    const portInd = findArgsInd("--port");
-    const realPort = portInd !== -1 ? Number(program.args[portInd + 1]) : port;
+    const portIndex = findArgsInd("--port");
+    const realPort =
+      portIndex !== -1 ? Number(program.args[portIndex + 1]) : port;
     const portStr = realPort === 80 ? "" : `:${realPort}`;
 
-    app.listen(realPort, () =>
-      console.log(
-        `server started at ${chalk.green("http://localhost" + portStr + "/")}`
-      )
+    server.listen(realPort, () =>
+      log(`server started at {green http://localhost${portStr}/}`)
     );
   });
 
@@ -63,24 +60,21 @@ themes
     if (findArgs("-d", "--dev")) {
       const dataFile = new File(process.cwd(), theme, "data.json");
       const { name } = dataFile.json();
-      console.log(`Installing Dev Theme ${name} as ${name}-dev`);
-      const r = await symlink(
-        dataFile.directory,
-        join(themesDir.path, `${name}-dev`)
-      );
-      r.warn && console.log(chalk.yellow("WARN: " + r.warn));
+      const nameDev = `${name}-dev`;
+      console.log(`Installing Dev Theme ${name} as ${nameDev}`);
+      await symlink(dataFile.directory, join(themesDir.path, nameDev));
       const config = configFile.json<FullConfig<any>>();
-      config.themes[`${name}-dev`] = {
+      config.themes[nameDev] = {
         type: "dev",
-        name: `${name}-dev`,
+        name: nameDev,
         version: "*",
       };
-      config.config.client.themesConfig[`${name}-dev`] = {};
+      config.config.client.themesConfig[nameDev] = {};
       configFile.write(config);
       return;
     }
     if (theme.startsWith("npm:")) {
-      console.log(`installing theme via ${chalk.red("npm")}...`);
+      log("installing theme via {red npm}...");
       exec(`npm i -g ${theme}`);
       const npmGlobalBinPath = exec("npm root -g").toString().split("\n")[0];
       const themeName = theme.replace("npm:", "");
@@ -100,18 +94,13 @@ themes
       const ind = themeName.indexOf("/");
       const owner = themeName.slice(0, ind);
       const repo = themeName.slice(ind + 1);
-      console.log(
-        `${chalk.green("Downloading")} theme ${repo} from ${chalk.bgWhite.black(
-          "github"
-        )}`
-      );
+      log(`{green Downloading} theme ${repo} from {bgWhite.black github}`);
       const repoZipUrl = `https://codeload.github.com/${owner}/${repo}/zip/master`;
       const zipFile = new File(themesDir.path, repo);
       zipFile.write(await (await fetch(repoZipUrl)).buffer());
       await extract(zipFile.path, { dir: join(themesDir.path) });
       zipFile.delete();
-      const extractedDir = new Dir(themesDir.path, `${repo}-master`);
-      extractedDir.rename(repo);
+      new Dir(themesDir.path, `${repo}-master`).rename(repo);
       const config = configFile.json<FullConfig<any>>();
       config.themes[repo] = {
         type: "github",
@@ -131,7 +120,7 @@ themes
   .action((theme: string) => {
     const config = configFile.json<FullConfig<any>>();
     if (!config.themes[theme]) {
-      console.log(`${chalk.red("Error")} Theme not installed`);
+      log(`{red Error} Theme not installed`);
       return;
     }
     const themeDir = new Dir(themesDir.path, theme);
