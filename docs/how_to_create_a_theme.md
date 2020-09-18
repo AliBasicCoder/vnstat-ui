@@ -1,10 +1,12 @@
 # how to create a theme
 
-## data.json
-
 first thing you need to create a file called `data.json`
 
-then type:
+## data.json
+
+```data.json``` is file containing all your them data
+
+it should look like this:
 
 ```json
 {
@@ -23,7 +25,7 @@ and replace:
 
 <HTML_FILE>: the html file for your theme (required)
 
-NOTE: html will be instated to the body
+NOTE: html will be inserted to the body
 
 <JS_FILES_NEEDED>: with any js files you need (required)
 
